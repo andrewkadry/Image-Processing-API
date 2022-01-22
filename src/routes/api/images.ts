@@ -1,27 +1,36 @@
 import express from 'express';
-import sharp from 'sharp';
+import resize from '../../utilities/imageResize';
+import fs from 'fs';
 import path from 'path';
 const images = express.Router();
 
-images.get('/', async (req, res) => {
-  try {
-    await sharp('./assets/full/' + (req.query.name as string))
-      .resize({
-        width: Number(req.query.width as string),
-        height: Number(req.query.height as string),
-        fit: 'contain',
-      })
-      .toFile('./assets/thumb/' + (req.query.name as string));
-  } catch (error) {
-    console.log(error);
-    res.statusCode = 400;
-    console.log(res.statusCode);
-    res.send('error: the requested image cannot be found!');
-  }
-
-  res.sendFile('/assets/thumb/' + req.query.name, {
-    root: path.join(__dirname, '../../..'),
-  });
-});
+images.get(
+  '/',
+  async (req: express.Request, res: express.Response) => {
+    const originalPath =
+      './assets/full/' + (req.query.name as string);
+    const thumbPath = './assets/thumb/' + (req.query.name as string);
+    if (
+      isNaN(Number(req.query.width as string)) ||
+      isNaN(Number(req.query.height as string))
+    ) {
+      res.send('height and width should be numbers!');
+    } else if (fs.existsSync(thumbPath)) {
+      res.sendFile('/assets/thumb/' + req.query.name, {
+        root: path.join(__dirname, '../../..'),
+      });
+    } else {
+      await resize(
+        originalPath,
+        Number(req.query.width as string),
+        Number(req.query.height as string),
+        thumbPath,
+      );
+      res.sendFile(thumbPath, {
+        root: path.join(__dirname, '../../..'),
+      });
+    }
+  },
+);
 
 export default images;

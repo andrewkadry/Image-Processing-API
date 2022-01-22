@@ -13,27 +13,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const sharp_1 = __importDefault(require("sharp"));
+const imageResize_1 = __importDefault(require("../../utilities/imageResize"));
+const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const images = express_1.default.Router();
 images.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield (0, sharp_1.default)('./assets/full/' + req.query.name)
-            .resize({
-            width: Number(req.query.width),
-            height: Number(req.query.height),
-            fit: 'contain',
-        })
-            .toFile('./assets/thumb/' + req.query.name);
+    const originalPath = './assets/full/' + req.query.name;
+    const thumbPath = './assets/thumb/' + req.query.name;
+    if (isNaN(Number(req.query.width)) ||
+        isNaN(Number(req.query.height))) {
+        res.send('height and width should be numbers!');
     }
-    catch (error) {
-        console.log(error);
-        res.statusCode = 400;
-        console.log(res.statusCode);
-        res.send('error: the requested image cannot be found!');
+    else if (fs_1.default.existsSync(thumbPath)) {
+        res.sendFile('/assets/thumb/' + req.query.name, {
+            root: path_1.default.join(__dirname, '../../..'),
+        });
     }
-    res.sendFile('/assets/thumb/' + req.query.name, {
-        root: path_1.default.join(__dirname, '../../..'),
-    });
+    else {
+        yield (0, imageResize_1.default)(originalPath, Number(req.query.width), Number(req.query.height), thumbPath);
+        res.sendFile(thumbPath, {
+            root: path_1.default.join(__dirname, '../../..'),
+        });
+    }
 }));
 exports.default = images;
