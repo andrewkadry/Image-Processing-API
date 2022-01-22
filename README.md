@@ -3,6 +3,7 @@
 image processing api is an API that resize any image you want
 
 <details><summary>scripts</summary>
+ 
 the script needed to test the code is: 
 ```npm run test``` this just forces the project to build and run jasmine
  
@@ -20,15 +21,22 @@ the script needed to test the code is:
  |```npm run build```| builds the project to directory dist|
  |```npm run buildrun```| build the project and run the compiled code|
  </details>
+ 
+ 
  <details><summary>endpoint details</summary>
- -the image processing endpoint is ```/api/images?name=santamonica.jpg&width=200&height=200```
+ -the image processing endpoint is
+ /api/images?name=santamonica.jpg&width=200&height=200
  
  -you can change the parameters but make sure to put the full image in the directory assets/full first
  
  and then drop the image name and the width and height you want resize the image to in the url.
  </details>
  
- <details><summary>additional scripts</summary>
- -finally there are more scripts that i created like ```npm run prettier``` and ```npm run lint```
+ <details>
+ <summary>additional scripts</summary>
+ -finally there are more scripts that i created like 
+ ```npm run prettier```
+ and 
+ ```npm run lint```
  
  </details>
