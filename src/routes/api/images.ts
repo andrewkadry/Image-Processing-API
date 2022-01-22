@@ -9,14 +9,16 @@ images.get(
   async (req: express.Request, res: express.Response) => {
     const originalPath =
       './assets/full/' + (req.query.name as string);
-    const thumbPath = './assets/thumb/' + (req.query.name as string);
+    const thumbPath =
+      (((('./assets/thumb/' + req.query.width) as string) +
+        req.query.height) as string) + (req.query.name as string);
     if (
       isNaN(Number(req.query.width as string)) ||
       isNaN(Number(req.query.height as string))
     ) {
       res.send('height and width should be numbers!');
     } else if (fs.existsSync(thumbPath)) {
-      res.sendFile('/assets/thumb/' + req.query.name, {
+      res.sendFile(thumbPath, {
         root: path.join(__dirname, '../../..'),
       });
     } else {

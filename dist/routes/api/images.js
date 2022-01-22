@@ -19,13 +19,14 @@ const path_1 = __importDefault(require("path"));
 const images = express_1.default.Router();
 images.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const originalPath = './assets/full/' + req.query.name;
-    const thumbPath = './assets/thumb/' + req.query.name;
+    const thumbPath = (('./assets/thumb/' + req.query.width) +
+        req.query.height) + req.query.name;
     if (isNaN(Number(req.query.width)) ||
         isNaN(Number(req.query.height))) {
         res.send('height and width should be numbers!');
     }
     else if (fs_1.default.existsSync(thumbPath)) {
-        res.sendFile('/assets/thumb/' + req.query.name, {
+        res.sendFile(thumbPath, {
             root: path_1.default.join(__dirname, '../../..'),
         });
     }
